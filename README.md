@@ -1,6 +1,4 @@
-
-
-*** ESP8266 ***
+### ESP8266 ###
 Get firmware micropython:
 https://micropython.org/download/esp8266/
 
