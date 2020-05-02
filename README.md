@@ -1,4 +1,6 @@
-### ESP8266 ###
+
+
+*** ESP8266 ***
 Get firmware micropython:
 https://micropython.org/download/esp8266/
 
@@ -19,5 +21,7 @@ while n > 0:
     n = self.serial.inWaiting()
 time.sleep(2) # add this line
 ```
+
+
 
 

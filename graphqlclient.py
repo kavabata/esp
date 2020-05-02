@@ -59,3 +59,17 @@ def send_sensor_value(sensor_type, value):
     print(query)
 
     res = client.execute(query)
+
+def send_config_value(config_key, value):
+    client = GraphQLClient(config.get_value('api'))
+
+    query = ('''
+    mutation{
+    configValue(key: "%s", configKey: "%s", value: "%s")
+    }
+    ''' % (config.get_value('key'), config_key, value))
+
+    print('send_config_value')
+    print(query)
+
+    res = client.execute(query)

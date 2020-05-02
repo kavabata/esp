@@ -8,6 +8,7 @@ import machine
 
 oled.console('Run')
 wifi.get_connection()
+wifi.send_config()
 
 cnt = 0
 

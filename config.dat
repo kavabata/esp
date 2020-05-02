@@ -4,13 +4,10 @@ api;http://192.168.1.192:7000/graphql
 key;mykeyrele
 controller_oled;0
 controller_switch;1
+controller_switch_pin;13
+controller_switch2;1
+controller_switch2_pin;15
 sensor_dht;11
 sensor_dht_pin;2
 sensor_pir;0
 sensor_pir_pin;13
-
-
-dht;11
-dht_pin;2
-pir;0
-pir_pin;13
