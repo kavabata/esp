@@ -1,6 +1,7 @@
 from urequests import post
 import wifi
 import config
+import json
 
 wifi.get_connection()
 
@@ -74,7 +75,7 @@ def send_config_value(config_key, value):
 
     res = client.execute(query)
 
-def get_config():
+def update_config():
     client = GraphQLClient(config.get_value('api'))
 
     query = ('''
@@ -89,8 +90,9 @@ def get_config():
     print('get_config')
     print(query)
 
-    # res = client.execute(query)
+    res = client.execute(query)
+    c = json.loads(res)
 
-    # print(res)
-
-# send_config_value("ip", '0')
+    for x in c['data']['getConfig']:
+        if "key" in x and "value" in x:
+            config.write_conf(x['key'], x['value'])

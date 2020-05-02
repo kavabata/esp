@@ -10,6 +10,7 @@ import graphqlclient
 oled.console('Run')
 wifi.get_connection()
 graphqlclient.send_config_value('ip', wifi.ifconfig())
+graphqlclient.update_config()
 
 cnt = 0
 run_pir = int(config.get_value('sensor_pir')) > 0
