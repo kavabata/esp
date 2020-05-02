@@ -5,11 +5,11 @@ import time
 
 CONF_FILE = 'config.dat'
 
-def put_default():
-  confmgr.write_conf('wifi_ssid', 'UKA173')
-  confmgr.write_conf('wifi_password', '0685153051')
-  confmgr.write_conf('key', 'mykeyrele')
-  confmgr.write_conf('api', 'http://192.168.1.149:4000/graphql')
+# def put_default():
+#   confmgr.write_conf('wifi_ssid', 'UKA173')
+#   confmgr.write_conf('wifi_password', '0685153051')
+#   confmgr.write_conf('key', 'mykeyrele')
+#   confmgr.write_conf('api', 'http://192.168.1.149:4000/graphql')
 
 def get_values():
   lines = []

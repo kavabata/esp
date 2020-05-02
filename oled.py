@@ -3,7 +3,7 @@ import ssd1306
 import config
 
 oled = None
-is_oled = config.get_value('oled')
+is_oled = config.get_value('controller_oled')
 oledcursor = 0
 
 def init():

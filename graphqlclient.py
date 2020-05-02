@@ -46,3 +46,16 @@ class GraphQLClient:
             return response.content.decode('utf-8')
         else:
             return 'no api connected'
+
+def send_sensor_value(sensor_type, value):
+    client = GraphQLClient(config.get_value('api'))
+
+    query = ('''
+    mutation{
+    sensorValue(key: "%s", sensorType: "%s", value: "%s")
+    }
+    ''' % (config.get_value('key'), sensor_type, value))
+
+    print(query)
+
+    res = client.execute(query)

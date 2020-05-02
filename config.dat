@@ -1,8 +1,15 @@
 wifi_password;0685153051
-api;http://192.168.1.149:4000/graphql
 wifi_ssid;UKA173
+api;http://192.168.1.192:7000/graphql
 key;mykeyrele
-oled;0
+controller_oled;0
+controller_switch;1
+sensor_dht;11
+sensor_dht_pin;2
+sensor_pir;0
+sensor_pir_pin;13
+
+
 dht;11
 dht_pin;2
 pir;0

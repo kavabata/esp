@@ -14,7 +14,7 @@ def get_connection():
 
     # First check if there already is any connection:
     if wlan_sta.isconnected():
-        oled.console('wifi connected [1]')
+        # oled.console('wifi connected [1]')
         return wlan_sta
     
     try:
