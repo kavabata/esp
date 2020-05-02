@@ -27,5 +27,3 @@ def runWhilePir():
 
 def runWhileLight():
   send_sensor_value("lightlevel", light.read())
-
-init()

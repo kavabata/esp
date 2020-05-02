@@ -4,7 +4,6 @@ import ure
 import time
 import oled
 import config
-from graphqlclient import send_config_value
 
 wlan_sta = network.WLAN(network.STA_IF)
 
@@ -45,8 +44,8 @@ def do_connect(ssid, password):
         print('\nFailed. Not Connected to: ' + ssid)
     return connected
 
-def send_config():
+def ifconfig():
     a = wlan_sta.ifconfig()
-    print (a[0])
-    send_config_value('ip', a[0])
+    return a[0]
 
+# send_config();

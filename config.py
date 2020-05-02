@@ -2,6 +2,7 @@ import network
 import socket
 import ure
 import time
+import graphqlclient
 
 CONF_FILE = 'config.dat'
 

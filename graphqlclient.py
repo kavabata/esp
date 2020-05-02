@@ -73,3 +73,24 @@ def send_config_value(config_key, value):
     print(query)
 
     res = client.execute(query)
+
+def get_config():
+    client = GraphQLClient(config.get_value('api'))
+
+    query = ('''
+    {
+        getConfig(key: "%s") {
+            key
+            value
+        }
+    }
+    ''' % (config.get_value('key')))
+
+    print('get_config')
+    print(query)
+
+    # res = client.execute(query)
+
+    # print(res)
+
+# send_config_value("ip", '0')
