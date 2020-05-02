@@ -5,6 +5,7 @@ import pir
 import config
 import machine
 import graphqlclient
+import lightlevel
 
 
 oled.console('Run')
@@ -13,11 +14,7 @@ graphqlclient.send_config_value('ip', wifi.ifconfig())
 graphqlclient.update_config()
 
 cnt = 0
-run_pir = int(config.get_value('sensor_pir')) > 0
-run_dht = int(config.get_value('sensor_dht')) > 0
 
-if run_pir:
-  pir.init()
 
 def dhtRunEveryTime(timer):
   global cnt
@@ -26,19 +23,21 @@ def dhtRunEveryTime(timer):
   if run_pir:
     pir.runWhileLight()
 
-  if run_dht:
-    dhtlocal.runWhile()
 
   cnt = cnt + 1
 
-t2 = machine.Timer(2)
-# t2.init(period=dhtlocal.newtimer(1, 'hour'), mode=t2.PERIODIC, callback=dhtRunEveryTime)
+config.get_value('temperature_delay')
 
-if run_pir:
-  def pirC(timer):
-    pir.runWhilePir()
+if int(config.get_value('sensor_lightlevel')) > 0:
+  t0 = machine.Timer(0)
+  t0.init(period=int(config.get_value('temperature_delay')), mode=t2.PERIODIC, callback=dhtlocal.runWhile)
 
-  t3 = machine.Timer(3)
-  t3.init(period=100, mode=t3.PERIODIC, callback=pirC)
+if int(config.get_value('sensor_lightlevel')) > 0:
+  lightlevel.init()
+  t1 = machine.Timer(1)
+  t1.init(period=config.get_value('sensor_lightlevel_delay'), mode=t3.PERIODIC, callback=lightlevel.run)
   
+if int(config.get_value('sensor_pir')) > 0:
+  pir.init()
+
 

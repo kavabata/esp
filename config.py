@@ -2,7 +2,6 @@ import network
 import socket
 import ure
 import time
-import graphqlclient
 
 CONF_FILE = 'config.dat'
 
@@ -41,4 +40,3 @@ def write_conf(key, value):
     lines.append("%s;%s\n" % (k, v))
   with open(CONF_FILE, "w") as f:
     f.write(''.join(lines))
-
