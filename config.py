@@ -30,7 +30,7 @@ def get_value(key):
     k, value = line.strip("\n").split(";")
     if k == key:
       return value
-  return None
+  return 0
 
 def write_conf(key, value):
   lines = []

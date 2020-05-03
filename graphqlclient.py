@@ -61,6 +61,19 @@ def send_sensor_value(sensor_type, value):
 
     res = client.execute(query)
 
+def send_controller_value(controller, value):
+    client = GraphQLClient(config.get_value('api'))
+
+    query = ('''
+    mutation{
+    controllerCall(key: "%s", controller: "%s", value: "%s")
+    }
+    ''' % (config.get_value('key'), controller, value))
+
+    print(query)
+
+    res = client.execute(query)
+
 def send_config_value(config_key, value):
     client = GraphQLClient(config.get_value('api'))
 
