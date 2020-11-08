@@ -79,7 +79,7 @@ def send_config_value(config_key, value):
 
     query = ('''
     mutation{
-    configValue(key: "%s", configKey: "%s", value: "%s")
+    configValue(key: "%s", name: "%s", value: "%s")
     }
     ''' % (config.get_value('key'), config_key, value))
 

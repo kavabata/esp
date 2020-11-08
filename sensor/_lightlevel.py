@@ -8,6 +8,6 @@ def init():
   if int(config.get_value('sensor_lightlevel')) > 0: 
     light = ADC(config.get_value('sensor_lightlevel_pin'))
 
-def run():
+def run(t):
   send_sensor_value("lightlevel", light.read())
 

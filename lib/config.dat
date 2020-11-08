@@ -1,6 +1,6 @@
 wifi_ssid;UKA173
 wifi_password;0685153051
-key;mykeyrele
+key;cinema
 api;http://192.168.1.192:7000/graphql
 sensor_dht;11
 sensor_dht_pin;2

@@ -29,19 +29,26 @@ def init():
     print('Got a connection from %s' % str(addr))
     print('Content = %s' % request)
 
-    res, message = controller_request(request)
-    if res:
-      conn.send('HTTP/1.1 200 OK\n')
-      conn.send('Content-Type: application/json\n')
-      conn.send('Connection: close\n\n')
-      conn.sendall('OK')
-      
-    else:
-      conn.send('HTTP/1.1 400 bad request\n')
-      conn.send('Content-Type: application/json\n')
-      conn.send('Connection: close\n\n')
-      conn.sendall(message)
+    conn.send('HTTP/1.1 200 OK\n')
+    conn.send('Content-Type: application/json\n')
+    conn.send('Connection: close\n\n')
+    
+    conn.sendall(request)
     conn.close()
+
+    # res, message = controller_request(request)
+    # if res:
+    #   conn.send('HTTP/1.1 200 OK\n')
+    #   conn.send('Content-Type: application/json\n')
+    #   conn.send('Connection: close\n\n')
+    #   conn.sendall('OK')
+      
+    # else:
+    #   conn.send('HTTP/1.1 400 bad request\n')
+    #   conn.send('Content-Type: application/json\n')
+    #   conn.send('Connection: close\n\n')
+    #   conn.sendall(message)
+    # conn.close()
 
 def controller_request(request):
   request_data = request.split('\r\n')[0].split(' ')
@@ -52,3 +59,5 @@ def controller_request(request):
       return controller.fire(c, a)
 
   return False, 'Wrong request'
+
+# init()

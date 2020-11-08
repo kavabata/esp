@@ -4,24 +4,20 @@ from oled import showDht
 import config
 from graphqlclient import send_sensor_value
 
-if config.get_value('sensor_dht') == '11':
-  sensor = dht.DHT11(Pin(int(config.get_value('sensor_dht_pin')))) # d4 
-else:
-  sensor = dht.DHT22(Pin(int(config.get_value('sensor_dht_pin')))) # d4 
 
 def sendDht(t, h):
   send_sensor_value("temperature", t)
   send_sensor_value("humidity", h)
 
 
-def runWhile():
+def runWhile(t):
   try:
     sensor.measure()
-
     t = sensor.temperature()
     h = sensor.humidity()
+    print('runWhile to read sensor. %s' % t)
     sendDht(t, h)
-    showDht(t, h)
+    # showDht(t, h)
 
   except OSError as e:
     print('Failed to read sensor.')

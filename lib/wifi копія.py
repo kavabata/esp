@@ -37,10 +37,10 @@ def do_connect(ssid, password):
         time.sleep(0.1)
         print('.', end='')
     if connected:
-        oled.console('wifi connected [2]')
+        # oled.console('wifi connected [2]')
         print('\nConnected. Network config: ', wlan_sta.ifconfig())
     else:
-        oled.console('wifi fail')
+        # oled.console('wifi fail')
         print('\nFailed. Not Connected to: ' + ssid)
     return connected
 
