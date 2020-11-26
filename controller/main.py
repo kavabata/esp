@@ -15,9 +15,6 @@ except:
 import gc
 gc.collect()
 
-wifi.get_connection()
-graphqlclient.send_config_value('ip', wifi.ifconfig())
-
 # global controllers properties
 controllers = {
   'switch': {
@@ -42,16 +39,12 @@ controllers = {
 
 if int(config.get_value('controller_switch')) > 0:
   switch = Pin(int(config.get_value('controller_switch_pin')), Pin.OUT)
-  # pwm_switch = PWM(switch)
-  # pwm_switch.freq(300)
   controllers['switch']['pwm'] = PWM(switch)
   controllers['switch']['pwm'].freq(300)
   print('PWM 1')
   
 if int(config.get_value('controller_switch2')) > 0:
   switch2 = Pin(int(config.get_value('controller_switch2_pin')), Pin.OUT)
-  # pwm_switch2 = PWM(switch2)
-  # pwm_switch2.freq(1000)
   controllers['switch2']['pwm'] = PWM(switch2)
   controllers['switch2']['pwm'].freq(1000)
   print('PWM 2')
@@ -133,7 +126,11 @@ def save_controller_state(controller, state):
   graphqlclient.send_controller_value(controller, state)
   
 def init():
-  addr = config.get_value('ip_address')
+  wifi.get_connection()
+  addr = wifi.ifconfig()
+  config.set_value('ip_address', addr)
+  graphqlclient.send_config_value('ip', addr)
+
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.bind((addr, 80))
   s.listen(5)
