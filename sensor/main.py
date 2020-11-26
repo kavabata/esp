@@ -1,5 +1,6 @@
 import config
 import wifi
+import dht
 import graphqlclient
 from machine import Pin, ADC
 import time
