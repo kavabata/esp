@@ -4,9 +4,17 @@ import dht
 import graphqlclient
 from machine import Pin, ADC
 import time
-
 import gc
 gc.collect()
+
+# I'm simple sensor with:
+#   PIR - ?GPIO0;
+#   DHT - ?GPIO2;
+#   Light Level Sensor (LL) - ?ADO
+
+# - my nickname is? it should be uniq
+config.write_conf('key', 'cinema')
+
 
 wifi.get_connection()
 addr = wifi.ifconfig()
@@ -20,9 +28,9 @@ DHT_H = ""
 
 if IS_DHT:
   if config.get_value('sensor_dht') == '11':
-    sensor = dht.DHT11(Pin(int(config.get_value('sensor_dht_pin')))) # d4 
+    sensor = dht.DHT11(Pin(int(config.get_value('sensor_dht_pin'))))
   else:
-    sensor = dht.DHT22(Pin(int(config.get_value('sensor_dht_pin')))) # d4 
+    sensor = dht.DHT22(Pin(int(config.get_value('sensor_dht_pin'))))
 
 
 IS_LL = int(config.get_value('sensor_lightlevel')) > 0
