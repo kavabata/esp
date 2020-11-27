@@ -5,7 +5,6 @@ import time
 import config
 
 wlan_sta = network.WLAN(network.STA_IF)
-
 server_socket = None
 
 def get_connection():
@@ -13,12 +12,10 @@ def get_connection():
 
     # First check if there already is any connection:
     if wlan_sta.isconnected():
-        # oled.console('wifi connected [1]')
         return wlan_sta
-    
+
     try:
       do_connect(config.get_value('wifi_ssid'), config.get_value('wifi_password'))
-
     except OSError as e:
       print("exception", str(e))
 
@@ -36,15 +33,11 @@ def do_connect(ssid, password):
         time.sleep(0.1)
         print('.', end='')
     if connected:
-        # oled.console('wifi connected [2]')
         print('\nConnected. Network config: ', wlan_sta.ifconfig())
     else:
-        # oled.console('wifi fail')
         print('\nFailed. Not Connected to: ' + ssid)
     return connected
 
 def ifconfig():
     a = wlan_sta.ifconfig()
     return a[0]
-
-# send_config();
