@@ -9,8 +9,9 @@ import gc
 gc.collect()
 
 wifi.get_connection()
-graphqlclient.send_config_value('ip', wifi.ifconfig())
-# graphqlclient.update_config()
+addr = wifi.ifconfig()
+graphqlclient.send_config_value('ip', addr)
+config.write_conf('ip_address', addr)
 
 
 IS_DHT = int(config.get_value('sensor_dht')) > 0
@@ -32,14 +33,15 @@ if IS_LL:
   LL = ADC(config.get_value('sensor_lightlevel_pin'))
 
 
+
 IS_PIR = int(config.get_value('sensor_pir')) > 0
 PIR_S = 0
 PIR = None
 
 if IS_PIR:
   PIR = Pin(int(config.get_value('sensor_pir_pin')), Pin.IN) #13 d5
-  # PIR.irq(trigger=Pin.IRQ_RISING, handler=runWhilePir)
   newState = PIR.value()
+
 
 while True:
   if IS_DHT:
@@ -57,16 +59,19 @@ while True:
 
     except OSError as e:
       print('Failed to read DHT or send.')
+      pass
 
   if IS_LL:
     try:
-      l = light.read()
+      l = LL.read()
+      l = round(100 * l/1024)
       if l != LLV:
         LLV = l
         graphqlclient.send_sensor_value("lightlevel", LLV)
 
     except OSError as e:
       print('Failed to read LLV or send.')
+      pass
 
   if IS_PIR:
     try:
