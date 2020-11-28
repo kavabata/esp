@@ -19,7 +19,7 @@ gc.collect()
 controllers = {
   'switch': {
     'state': 0,
-    'enable': 1,
+    'enable': int(config.get_value('controller_switch')) > 0,
     'from': 0,
     'to': 0,
     'start': 0,
@@ -28,7 +28,7 @@ controllers = {
   }, 
   'switch2': {
     'state': 0,
-    'enable': 1,
+    'enable': int(config.get_value('controller_switch2')) > 0,
     'from': 0,
     'to': 0,
     'start': 0,
@@ -36,18 +36,6 @@ controllers = {
     'pwm': {}
   }
 }
-
-if int(config.get_value('controller_switch')) > 0:
-  switch = Pin(int(config.get_value('controller_switch_pin')), Pin.OUT)
-  controllers['switch']['pwm'] = PWM(switch)
-  controllers['switch']['pwm'].freq(300)
-  print('PWM 1')
-  
-if int(config.get_value('controller_switch2')) > 0:
-  switch2 = Pin(int(config.get_value('controller_switch2_pin')), Pin.OUT)
-  controllers['switch2']['pwm'] = PWM(switch2)
-  controllers['switch2']['pwm'].freq(1000)
-  print('PWM 2')
 
 
 
@@ -79,19 +67,21 @@ def parse_request(r):
 
 def set_controller(controller, state, delay):
   if controller == 'test':
-    return 'Test Work'
+    return 'AVAILABE'
 
   if controller in controllers:
-    print(controllers[controller])
-    if controllers[controller]['enable'] == 1:
+    c = controllers[controller]
+
+    if c['enable'] == 1:
+      if state == 'get':
+        return c['state']
+
       start = time.ticks_ms();
-      controllers[controller]['from'] = controllers[controller]['state']
-      controllers[controller]['to'] = int(state)
-      controllers[controller]['start'] = start
-      controllers[controller]['deadline'] = start + int(delay)
-      return 'OK'
-  else:
-    return 'Not found Controller %s' % controller
+      c['from'] = c['state']
+      c['to'] = int(state)
+      c['start'] = start
+      c['deadline'] = start + int(delay)
+      return 'SET'
 
 def need_to_update():
   for cname in controllers:
@@ -105,9 +95,9 @@ def update_controller():
     c = controllers[cname]
     if c['to'] != c['state']:
       timeleft = c['deadline'] - time.ticks_ms()
-      print('timeleft', timeleft)
+      # print('timeleft', timeleft)
 
-      if timeleft < 0:
+      if timeleft <= 0:
         # timeout, set final value!!!
         save_controller_state(cname, c['to'])
       else:
@@ -119,17 +109,30 @@ def update_controller():
         # set new state!!!
         save_controller_state(cname, c['from'] + inc)
 
-def save_controller_state(controller, state):
+def save_controller_state(cname, state):
   v = math.floor(state * 1024 / 100)
-  controllers[controller]['pwm'].duty(v)
-  controllers[controller]['state'] = state
-  graphqlclient.send_controller_value(controller, state)
+  c = controllers[cname]
+  c['pwm'].duty(v)
+  c['state'] = state
+
+  # last state
+  if (c['to'] == c['state']):
+    graphqlclient.send_controller_value(cname, state)
   
 def init():
   wifi.get_connection()
   addr = wifi.ifconfig()
-  config.set_value('ip_address', addr)
+  config.write_conf('ip_address', addr)
   graphqlclient.send_config_value('ip', addr)
+
+  # init controllers
+  for cname in controllers:
+    if controllers[cname]['enable']:
+      pin = int(config.get_value("controller_%s_pin" % (cname)))
+      switch = Pin(pin, Pin.OUT)
+      controllers[cname]['pwm'] = PWM(switch)
+      controllers[cname]['pwm'].freq(1000)
+      print("%s controller up" % (cname))
 
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   s.bind((addr, 80))
@@ -150,7 +153,7 @@ def init():
     conn.send('HTTP/1.1 200 OK\n')
     conn.send('Content-Type: application/json\n')
     conn.send('Connection: close\n\n')
-    conn.sendall(controller)
+    conn.sendall("Controller %s state %s in %sms is %s" % (controller, state, delay, resp))
     conn.close()
 
     while need_to_update():

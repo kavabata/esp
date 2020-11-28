@@ -13,7 +13,7 @@ gc.collect()
 #   Light Level Sensor (LL) - ?ADO
 
 # - my nickname is? it should be uniq
-config.write_conf('key', 'cinema')
+# config.write_conf('key', 'esp-sensor-1')
 
 
 wifi.get_connection()

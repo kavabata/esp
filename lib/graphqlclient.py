@@ -12,7 +12,7 @@ class GraphQLClient:
         self.token = None
 
     def execute(self, query, variables=None):
-        print(query)
+        # print(query)
         return self._send(query, variables)
 
     def inject_token(self, token):
@@ -49,7 +49,7 @@ class GraphQLClient:
 
                 return response.content.decode('utf-8')
             except OSError as e:
-                print('Cant send graphql')
+                # print('Cant send graphql')
                 pass
 
             return 'skip'

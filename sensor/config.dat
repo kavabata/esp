@@ -7,5 +7,4 @@ sensor_dht_pin;2
 sensor_pir;1
 sensor_pir_pin;0
 sensor_lightlevel;1
-sensor_lightlevel_delay;60000
 ip_address;192.168.1.189
