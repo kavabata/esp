@@ -37,6 +37,19 @@ controllers = {
   }
 }
 
+wifi.get_connection()
+addr = wifi.ifconfig()
+config.write_conf('ip_address', addr)
+graphqlclient.send_config_value('ip', addr)
+
+# init controllers
+for cname in controllers:
+  if controllers[cname]['enable']:
+    pin = int(config.get_value("controller_%s_pin" % (cname)))
+    switch = Pin(pin, Pin.OUT)
+    controllers[cname]['pwm'] = PWM(switch)
+    controllers[cname]['pwm'].freq(1000)
+    print("%s controller up" % (cname))
 
 
 def parse_request(r):
@@ -118,33 +131,21 @@ def save_controller_state(cname, state):
   # last state
   if (c['to'] == c['state']):
     graphqlclient.send_controller_value(cname, state)
-  
+
 def init():
-  wifi.get_connection()
-  addr = wifi.ifconfig()
-  config.write_conf('ip_address', addr)
-  graphqlclient.send_config_value('ip', addr)
-
-  # init controllers
-  for cname in controllers:
-    if controllers[cname]['enable']:
-      pin = int(config.get_value("controller_%s_pin" % (cname)))
-      switch = Pin(pin, Pin.OUT)
-      controllers[cname]['pwm'] = PWM(switch)
-      controllers[cname]['pwm'].freq(1000)
-      print("%s controller up" % (cname))
-
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  print('listening on: ', addr)
+
   s.bind((addr, 80))
   s.listen(5)
   print('listening on: ', addr)
 
   while True:
-    conn, addr = s.accept()
+    conn, a = s.accept()
     request = conn.recv(1024)
     request = str(request)
 
-    print('Got a connection from %s' % str(addr))
+    print('Got a connection from %s' % str(a))
     print('Content = %s' % request)
 
     [controller, state, delay] = parse_request(request)

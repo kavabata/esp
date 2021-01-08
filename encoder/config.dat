@@ -1,0 +1,5 @@
+wifi_ssid;UKA173
+wifi_password;0685153051
+key;encoder
+api;http://192.168.1.149:7000/graphql
+ip_address;192.168.1.187

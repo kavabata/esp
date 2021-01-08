@@ -1,7 +1,7 @@
 wifi_ssid;UKA173
 wifi_password;0685153051
-key;esp-controller-1
-api;http://192.168.1.192:7000/graphql
+key;cinema-heat
+api;http://192.168.1.149:7000/graphql
 controller_switch;1
 controller_switch_pin;0
 controller_switch2;1

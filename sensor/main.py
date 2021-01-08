@@ -46,17 +46,21 @@ IS_PIR = int(config.get_value('sensor_pir')) > 0
 PIR_S = 0
 PIR = None
 
+
 if IS_PIR:
-  PIR = Pin(int(config.get_value('sensor_pir_pin')), Pin.IN) #13 d5
-  newState = PIR.value()
+  # A = Pin(int(config.get_value('sensor_pir_pin')), Pin.OUT)
+  # A.off()
+  PIR = Pin(int(config.get_value('sensor_pir_pin')), Pin.IN)
+  PIR_S = PIR.value()
 
 
 while True:
   if IS_DHT:
     try:
       sensor.measure()
+      # round for less request spam
       t = sensor.temperature()
-      h = sensor.humidity()
+      h = round(int(sensor.humidity()))
       if DHT_H != h:
         DHT_H = h
         graphqlclient.send_sensor_value("humidity", DHT_H)
@@ -72,7 +76,8 @@ while True:
   if IS_LL:
     try:
       l = LL.read()
-      l = round(100 * l/1024)
+      # round for less request spam *2
+      l = round(100 * l/2048) * 2
       if l != LLV:
         LLV = l
         graphqlclient.send_sensor_value("lightlevel", LLV)
@@ -90,3 +95,4 @@ while True:
 
     except OSError as e:
       print('Failed to read PIR or send.')
+      pass
