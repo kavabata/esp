@@ -24,6 +24,9 @@ rotary_current_state = 0
 
 def set_rotary():
   global rotary
+  global rotary_last_state
+  global rotary_current_state
+
   rotary = RotaryIRQ(pin_num_clk=5, 
     pin_num_dt=4,
     min_val=-100, 
@@ -31,6 +34,10 @@ def set_rotary():
     value=0,
     reverse=False, 
     range_mode=RotaryIRQ.RANGE_WRAP)
+
+  rotary_last_state = 0
+  rotary_current_state = 0
+
 
 def get_rotary():
   global rotary_last_state
@@ -118,31 +125,35 @@ def get_button():
   return 0
 
 # global controllers properties
-controllers = {
-  'switch': {
-    'url': 'http://192.168.1.187/switch/value/200',
-    'state': 0,
-    'max': 100,
-    'min': 0,
-    'multiplier': 5
-  }, 
-  'switch2': {
-    'url': 'http://192.168.1.187/switch2/value/200',
-    'state': 0,
-    'max': 100,
-    'min': 0,
-    'multiplier': 2
-  }
-}
+controllers = {}
+controller = {}
+controllers_current_key = 999
 
-controller = None
-controllers_current_key = len(controllers)
+def get_controllers():
+  global controllers
+  a = graphqlclient.get_controlles()
+
+  for c in range(0, len(a)):
+    controllers[a[c]['url']] = {
+      'url': a[c]['url'],
+      'state': int(a[c]['state']),
+      'max': int(a[c]['max']),
+      'min': int(a[c]['min']),
+      'multiplier': int(a[c]['multiplier'])
+    }
+  # print(controllers)
 
 def set_next_controller():
   global controller
   global controllers_current_key
 
   controllers_keys = list(controllers.keys())
+  if len(controllers_keys) == 0:
+    time.sleep(10)
+    get_controllers()
+    set_next_controller()
+    return False
+
   controllers_current_key += 1
   if controllers_current_key >= len(controllers_keys):
     controllers_current_key = 0
@@ -161,14 +172,18 @@ def set_controller():
 def init():
   global stopCycle
   load_led()
+
+  get_controllers()
   set_next_controller()
 
   while stopCycle:
     click = get_button()
 
     if click > SHORT_PRESS_TIME: #stop
-      stopCycle = False 
+      # stopCycle = False 
+      get_controllers()
     elif click > 0: #next controller
+      get_controllers()
       set_next_controller()
 
     if get_rotary():

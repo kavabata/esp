@@ -2,6 +2,7 @@ from urequests import post
 import wifi
 import config
 import json
+import ujson
 
 wifi.get_connection()
 
@@ -97,3 +98,28 @@ def update_config():
     for x in c['data']['getConfig']:
         if "key" in x and "value" in x:
             config.write_conf(x['key'], x['value'])
+
+def get_controlles():
+    query = ('''
+    {
+        encoderControllers(key: "%s") {
+            state
+            min
+            max
+            url
+            multiplier
+        }
+    }
+    ''' % (config.get_value('key')))
+    responce = client.execute(query)
+    try:
+        data = ujson.loads(responce)
+    except ValueError as e:
+        data = {
+            'data': {
+                'encoderControllers': []
+            }
+        }
+        pass
+
+    return data['data']['encoderControllers']
